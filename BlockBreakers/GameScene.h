@@ -10,4 +10,6 @@
 
 @interface GameScene : SKScene
 
+    @property (nonatomic, strong, nullable) UITouch *motivatingTouch;
+
 @end

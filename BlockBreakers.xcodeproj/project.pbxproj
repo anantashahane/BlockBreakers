@@ -16,6 +16,10 @@
 		8C39D8B12007D3D000571427 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C39D8B02007D3D000571427 /* Assets.xcassets */; };
 		8C39D8B42007D3D000571427 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C39D8B22007D3D000571427 /* LaunchScreen.storyboard */; };
 		8C39D8B72007D3D000571427 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C39D8B62007D3D000571427 /* main.m */; };
+		8C3AB3872017A70400648EB5 /* GameStart.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8C3AB3862017A70400648EB5 /* GameStart.sks */; };
+		8C3AB3892017A71A00648EB5 /* GameOver.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8C3AB3882017A71A00648EB5 /* GameOver.sks */; };
+		8C3AB38C2017A8FA00648EB5 /* GameStart.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3AB38B2017A8FA00648EB5 /* GameStart.m */; };
+		8C3AB38F2017A93F00648EB5 /* GameOver.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3AB38E2017A93F00648EB5 /* GameOver.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +37,12 @@
 		8C39D8B32007D3D000571427 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8C39D8B52007D3D000571427 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C39D8B62007D3D000571427 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8C3AB3862017A70400648EB5 /* GameStart.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameStart.sks; sourceTree = "<group>"; };
+		8C3AB3882017A71A00648EB5 /* GameOver.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameOver.sks; sourceTree = "<group>"; };
+		8C3AB38A2017A8FA00648EB5 /* GameStart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameStart.h; sourceTree = "<group>"; };
+		8C3AB38B2017A8FA00648EB5 /* GameStart.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameStart.m; sourceTree = "<group>"; };
+		8C3AB38D2017A93F00648EB5 /* GameOver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameOver.h; sourceTree = "<group>"; };
+		8C3AB38E2017A93F00648EB5 /* GameOver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameOver.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,12 +77,18 @@
 			children = (
 				8C39D8A02007D3D000571427 /* AppDelegate.h */,
 				8C39D8A12007D3D000571427 /* AppDelegate.m */,
-				8C39D8A32007D3D000571427 /* GameScene.sks */,
-				8C39D8A52007D3D000571427 /* Actions.sks */,
-				8C39D8A72007D3D000571427 /* GameScene.h */,
-				8C39D8A82007D3D000571427 /* GameScene.m */,
 				8C39D8AA2007D3D000571427 /* GameViewController.h */,
 				8C39D8AB2007D3D000571427 /* GameViewController.m */,
+				8C3AB38A2017A8FA00648EB5 /* GameStart.h */,
+				8C3AB38B2017A8FA00648EB5 /* GameStart.m */,
+				8C3AB3862017A70400648EB5 /* GameStart.sks */,
+				8C39D8A72007D3D000571427 /* GameScene.h */,
+				8C39D8A82007D3D000571427 /* GameScene.m */,
+				8C39D8A32007D3D000571427 /* GameScene.sks */,
+				8C3AB38D2017A93F00648EB5 /* GameOver.h */,
+				8C3AB38E2017A93F00648EB5 /* GameOver.m */,
+				8C3AB3882017A71A00648EB5 /* GameOver.sks */,
+				8C39D8A52007D3D000571427 /* Actions.sks */,
 				8C39D8AD2007D3D000571427 /* Main.storyboard */,
 				8C39D8B02007D3D000571427 /* Assets.xcassets */,
 				8C39D8B22007D3D000571427 /* LaunchScreen.storyboard */,
@@ -140,10 +156,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C3AB3892017A71A00648EB5 /* GameOver.sks in Resources */,
 				8C39D8AF2007D3D000571427 /* Main.storyboard in Resources */,
 				8C39D8A42007D3D000571427 /* GameScene.sks in Resources */,
 				8C39D8B12007D3D000571427 /* Assets.xcassets in Resources */,
 				8C39D8B42007D3D000571427 /* LaunchScreen.storyboard in Resources */,
+				8C3AB3872017A70400648EB5 /* GameStart.sks in Resources */,
 				8C39D8A62007D3D000571427 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -155,8 +173,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C3AB38C2017A8FA00648EB5 /* GameStart.m in Sources */,
 				8C39D8A92007D3D000571427 /* GameScene.m in Sources */,
 				8C39D8AC2007D3D000571427 /* GameViewController.m in Sources */,
+				8C3AB38F2017A93F00648EB5 /* GameOver.m in Sources */,
 				8C39D8B72007D3D000571427 /* main.m in Sources */,
 				8C39D8A22007D3D000571427 /* AppDelegate.m in Sources */,
 			);
@@ -293,7 +313,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q7KHHPX4EM;
 				INFOPLIST_FILE = BlockBreakers/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AnantaShahane.BlockBreakers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -306,7 +328,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q7KHHPX4EM;
 				INFOPLIST_FILE = BlockBreakers/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AnantaShahane.BlockBreakers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
