@@ -8,6 +8,8 @@
 
 #import "GameScene.h"
 #import "GameOver.h"
+#import "GameWon.h"
+
 @implementation GameScene
 
 static const uint32_t category_fence = 0x1 << 3;
@@ -48,7 +50,7 @@ static const uint32_t category_ball = 0x1 << 0;
     
     SKSpriteNode *ball2 = [SKSpriteNode spriteNodeWithImageNamed:@"Ball.png"];
     ball2.name = @"Ball2";
-    ball2.position = CGPointMake(100, 100);
+    ball2.position = CGPointMake(50, 50);
     ball2.zPosition = 1;
     ball2.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:ball2.size.width/2];
     ball2.physicsBody.dynamic = YES;
@@ -108,7 +110,21 @@ static const uint32_t category_ball = 0x1 << 0;
     joint.frequency = 3;
     [self.scene.physicsWorld addJoint:joint];
     
-    SKSpriteNode * node = [SKSpriteNode spriteNodeWithImageNamed:@"Block"];
+    self.blockFrames = [NSMutableArray array];
+    
+    SKTextureAtlas *blockAnimation = [SKTextureAtlas atlasNamed:@"Block.atlas"];
+    unsigned long numImages = blockAnimation.textureNames.count;
+    
+    for (int i = 0; i < numImages; i++)
+    {
+        NSString *textureName = [NSString stringWithFormat:@"block%02d.png", i];
+        SKTexture *temp = [blockAnimation textureNamed:textureName];
+        [self.blockFrames addObject:temp];
+    }
+    
+    
+    SKSpriteNode * node = [SKSpriteNode spriteNodeWithTexture:self.blockFrames[0]];
+    node.scale = 0.1;
     
     CGFloat kBlockWidth = node.size.width;
     CGFloat kBlockHorizontalSpace = 5.0f;
@@ -116,7 +132,8 @@ static const uint32_t category_ball = 0x1 << 0;
     
     for (int i = 0; i < kBlocksperRow; i++)
     {
-        node = [SKSpriteNode spriteNodeWithImageNamed:@"Block"];
+        node = [SKSpriteNode spriteNodeWithTexture:self.blockFrames[0]];
+        node.scale = 0.10;
         node.name = @"Block";
         node.position = CGPointMake((kBlockHorizontalSpace/2 + kBlockWidth/2 + i * (kBlockWidth) + i*kBlockHorizontalSpace)-self.size.width/2, self.size.height/2-50);
         node.zPosition = 1;
@@ -139,7 +156,8 @@ static const uint32_t category_ball = 0x1 << 0;
     kBlocksperRow = (self.size.width/ (kBlockWidth + kBlockHorizontalSpace)) -1;
     for (int i = 0; i < kBlocksperRow; i++)
     {
-        node = [SKSpriteNode spriteNodeWithImageNamed:@"Block"];
+        node = [SKSpriteNode spriteNodeWithTexture:self.blockFrames[0]];
+        node.scale = 0.10;
         node.name = @"Block";
         node.position = CGPointMake((kBlockHorizontalSpace/2 + kBlockWidth/2 + i * (kBlockWidth) + i*kBlockHorizontalSpace)-self.size.width/2, self.size.height/2-100);
         node.zPosition = 1;
@@ -162,7 +180,8 @@ static const uint32_t category_ball = 0x1 << 0;
     kBlocksperRow = (self.size.width/ (kBlockWidth + kBlockHorizontalSpace)) -1;
     for (int i = 0; i < kBlocksperRow; i++)
     {
-        node = [SKSpriteNode spriteNodeWithImageNamed:@"Block"];
+        node = [SKSpriteNode spriteNodeWithTexture:self.blockFrames[0]];
+        node.scale = 0.10;
         node.name = @"Block";
         node.position = CGPointMake((kBlockHorizontalSpace/2 + kBlockWidth/2 + i * (kBlockWidth) + i*kBlockHorizontalSpace)-self.size.width/2, self.size.height/2-150);
         node.zPosition = 1;
@@ -185,7 +204,7 @@ static const uint32_t category_ball = 0x1 << 0;
 }
 
 -(void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    const CGRect touchRegion = CGRectMake(-512, -384, self.size.width, self.size.height/3);
+    const CGRect touchRegion = CGRectMake(-512, -384, self.size.width, self.size.height/2);
     for (UITouch *touch in touches) {
         CGPoint p = [touch locationInNode:self];
         if(CGRectContainsPoint(touchRegion, p)){
@@ -229,25 +248,92 @@ static const uint32_t category_ball = 0x1 << 0;
 -(void) didBeginContact:(SKPhysicsContact *)contact {
     NSString *NameA = contact.bodyA.node.name;
     NSString *NameB = contact.bodyB.node.name;
-    
+    if([self children].count > 60)
+    {
+        SKScene *scene = self.scene;
+        [[self childNodeWithName:@"spark"] removeAllChildren];
+    }
     if(([NameA containsString:@"Fence"] && [NameB containsString:@"Ball"]) || ([NameA containsString:@"Ball"] && [NameB containsString:@"Fence"]))
     {
         if(contact.contactPoint.y < -364)
         {
             SKView *view = (SKView *) self.view;
             [self removeFromParent];
-            
+
             GameOver *scene = [GameOver nodeWithFileNamed:@"GameOver"];
             scene.scaleMode = SKSceneScaleModeAspectFit;
-            
+
             [view presentScene:scene];
         }
+        NSString *SparkPath = [[NSBundle mainBundle] pathForResource:@"Sparks" ofType:@"sks"];
+        SKEmitterNode *spark = [NSKeyedUnarchiver unarchiveObjectWithFile:SparkPath];
+        spark.position = [contact contactPoint];
+        spark.zPosition = 1;
+        SKAction *Sparky = [SKAction runBlock:^{
+            [self addChild:spark];
+        }];
+        
+        SKAction *BorderHit = [SKAction playSoundFileNamed:@"Border.wav" waitForCompletion:NO];
+        SKAction *rebound = [SKAction sequence:@[BorderHit, Sparky]];
+        [self.SparkContainer addObject:spark];
+        [self runAction:rebound];
     }
     if(([NameA containsString:@"Block"] && [NameB containsString:@"Ball"])||([NameB containsString:@"Block"] && [NameA containsString:@"Ball"]))
     {
+        SKNode *block;
+        if([NameA containsString:@"Block"])
+        {
+            block = contact.bodyA.node;
+        }
+        else
+        {
+            block = contact.bodyB.node;
+        }
+        SKAction *BlockHit = [SKAction playSoundFileNamed:@"Border.wav" waitForCompletion:NO];
+        SKAction *ExplodingBlock = [SKAction animateWithTextures:self.blockFrames
+                                                    timePerFrame:0.002f
+                                                          resize:NO
+                                                         restore:NO];
+        NSString *particleRampPath = [[NSBundle mainBundle] pathForResource:@"ParticleBuildUp" ofType:@"sks"];
+        SKEmitterNode *particleRamp = [NSKeyedUnarchiver unarchiveObjectWithFile:particleRampPath];
+        particleRamp.position = CGPointMake(0, 0);
+        particleRamp.zPosition = 0;
         
+        SKAction *actionRamp = [SKAction runBlock:^{
+            [block addChild:particleRamp];
+        }];
+        SKAction *actionRampSequence = [SKAction group:@[BlockHit, actionRamp, ExplodingBlock]];
+        
+        NSString *particleExplodedPath = [[NSBundle mainBundle] pathForResource:@"ParticleBlock" ofType:@"sks"];
+        SKEmitterNode *BlockExploded = [NSKeyedUnarchiver unarchiveObjectWithFile:particleExplodedPath];
+        BlockExploded.position = CGPointMake(0, 0);
+        BlockExploded.zPosition = 2;
+        SKAction *explodedBlock = [SKAction runBlock:^{
+            [block addChild:BlockExploded];
+        }];
+        
+        SKAction *BlockBoom = [SKAction playSoundFileNamed:@"Explosion.wav" waitForCompletion:NO];
+        SKAction *actionRemoveBlock = [SKAction removeFromParent];
+        SKAction *explosion = [SKAction sequence:@[BlockBoom, explodedBlock,[SKAction fadeOutWithDuration:0.4]]];
+        
+        SKAction *checkGameOver = [SKAction runBlock:^{
+            BOOL anyBlocksRemaining = ([self childNodeWithName:@"Block"] != nil);
+            if(!anyBlocksRemaining)
+            {
+                SKView *skview = (SKView *)self.view;
+                [self removeFromParent];
+                GameWon *scene = [GameWon nodeWithFileNamed:@"GameWon"];
+                scene.scaleMode = SKSceneScaleModeAspectFit;
+                [skview presentScene:scene];
+            }
+        }];
+        [block runAction:[SKAction sequence:@[actionRampSequence, explosion, actionRemoveBlock, checkGameOver]]];
     }
-    NSLog(@"Object colided %@, %@", NameA, NameB);
+    if(([NameA containsString:@"Ball"] && [NameB containsString:@"Paddle"]) || ([NameB containsString:@"Ball"] && [NameA containsString:@"Paddle"]))
+    {
+        SKAction *paddleAudio = [SKAction playSoundFileNamed:@"paddle.wav" waitForCompletion:NO];
+        [self runAction:paddleAudio];
+    }
 }
 
 -(void) update:(NSTimeInterval)currentTime{

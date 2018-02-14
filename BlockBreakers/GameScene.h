@@ -10,6 +10,8 @@
 
 @interface GameScene : SKScene <SKPhysicsContactDelegate>
 
-    @property (nonatomic, strong, nullable) UITouch *motivatingTouch;
+@property (strong, nonatomic) NSMutableArray *blockFrames;
+@property (nonatomic, strong, nullable) UITouch *motivatingTouch;
+@property(nonatomic, strong) NSMutableArray *SparkContainer;
 
 @end
